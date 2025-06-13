@@ -1,6 +1,5 @@
-#ifndef __WIFI_CAPTIVE_PORTAL_ESP_IDF_COMPONENT_WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_H_INCLUDED__
-#define __WIFI_CAPTIVE_PORTAL_ESP_IDF_COMPONENT_WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_H_INCLUDED__
-/**	captive-portal-component
+#pragma once
+/**captive-portal-component
 
   Copyright (c) 2021 Jeremy Carter <jeremy@jeremycarter.ca>
 
@@ -30,11 +29,8 @@
 #include "freertos/semphr.h"
 #include "esp_system.h"
 
-
-
-#define DNS_URI "http://senvis.local"
-#define DNS_NS "ns"
-
+#define CAPTIVE_PORTAL_DNS_URI CONFIG_CAPTIVE_PORTAL_DNS_URI
+#define CAPTIVE_PORTAL_DNS_NS CONFIG_CAPTIVE_PORTAL_DNS_NS
 
 #define WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_LEN 512
 
@@ -105,6 +101,4 @@ extern "C"
 
 #ifdef __cplusplus
 }
-#endif
-
 #endif

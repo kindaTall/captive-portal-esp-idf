@@ -8,34 +8,27 @@
 # otherwise you aren't allowed to copy, distribute, or use any
 # part of this project in any way.
 
-menu "[<>] Project connection config"
-    comment " ----- WiFi Access Point Settings ----- "
+menu "[<>] Captive Portal Configuration"
+    comment " ----- Captive Portal Settings ----- "
 
-    config EXAMPLE_WIFI_AP_SSID
-        string "WiFi AP SSID"
-        default "wifi-net-84541"
+    config CAPTIVE_PORTAL_DNS_PAGE_NAME
+        string "Captive Portal DNS Page Name"
+        default "http://wifi-captive-portal/"
         help
-            Start up an access point with this SSID.
+            The URL that the captive portal DNS will resolve all requests to.
 
-    config EXAMPLE_WIFI_AP_PASSWORD
-        string "WiFi AP Password"
-        default "DHJSd 86 fUIxdf"
+    config CAPTIVE_PORTAL_DNS_URI
+        string "Captive Portal DNS URI"
+        default "http://senvis.local"
         help
-            Start up an access point with this Password.
+            The URI used by the captive portal DNS.
 
-    config EXAMPLE_WIFI_AP_CHANNEL
-        int "WiFi AP Channel"
-        range 1 13
-        default 1
+    config CAPTIVE_PORTAL_DNS_NS
+        string "Captive Portal DNS NS Record"
+        default "ns"
         help
-            WiFi channel (network channel) for the example to use.
+            The NS record for the captive portal DNS.
 
-    config EXAMPLE_MAX_AP_CONN
-        int "WiFi Maximum connections AP"
-        default 4
-        help
-            Max number of the STA connects to AP.
-
-    comment " ----- End WiFi Access Point Settings ----- "
+    comment " ----- End Captive Portal Settings ----- "
 
 endmenu

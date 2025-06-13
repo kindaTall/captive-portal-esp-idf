@@ -13,13 +13,13 @@ menu "[<>] Project connection config"
 
     config EXAMPLE_WIFI_AP_SSID
         string "WiFi AP SSID"
-        default "wifi-net-84541"
+        default "esp32-captive-portal"
         help
             Start up an access point with this SSID.
 
     config EXAMPLE_WIFI_AP_PASSWORD
         string "WiFi AP Password"
-        default "DHJSd 86 fUIxdf"
+        default "esp32pwd"
         help
             Start up an access point with this Password.
 
@@ -35,6 +35,12 @@ menu "[<>] Project connection config"
         default 4
         help
             Max number of the STA connects to AP.
+
+    config EXAMPLE_WIFI_AP_IP_GW
+        string "WiFi AP IP Gateway"
+        default "192.213.16.19"
+        help
+            Set the IP address for the AP gateway.
 
     comment " ----- End WiFi Access Point Settings ----- "
 

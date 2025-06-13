@@ -60,19 +60,16 @@ static void wifi_event_handler(void *arg, esp_event_base_t event_base,
 
 static void wifi_captive_portal_esp_idf_wifi_ap_init(void)
 {
-  const int max_connection = 4;
-  const int channel = 5;
-
   wifi_config_t wifi_config_ap = {
       .ap = {
-          .ssid = cap_ssid,
-          .ssid_len = strlen(cap_ssid),
-          .channel = channel,
-          .password = cap_pwd,
-          .max_connection = max_connection,
+          .ssid = EXAMPLE_WIFI_AP_SSID,
+          .ssid_len = strlen(EXAMPLE_WIFI_AP_SSID),
+          .channel = EXAMPLE_WIFI_AP_CHANNEL,
+          .password = EXAMPLE_WIFI_AP_PASSWORD,
+          .max_connection = EXAMPLE_MAX_AP_CONN,
           .authmode = WIFI_AUTH_WPA_WPA2_PSK},
   };
-  if (strlen(CONFIG_EXAMPLE_WIFI_AP_PASSWORD) == 0)
+  if (strlen(EXAMPLE_WIFI_AP_PASSWORD) == 0)
   {
     wifi_config_ap.ap.authmode = WIFI_AUTH_OPEN;
   }
@@ -82,7 +79,7 @@ static void wifi_captive_portal_esp_idf_wifi_ap_init(void)
   ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_AP, &wifi_config_ap));
 
   ESP_LOGI(TAG, "starting WiFi access point: SSID: %s password:%s channel: %d",
-           CONFIG_EXAMPLE_WIFI_AP_SSID, CONFIG_EXAMPLE_WIFI_AP_PASSWORD, CONFIG_EXAMPLE_WIFI_AP_CHANNEL);
+           EXAMPLE_WIFI_AP_SSID, EXAMPLE_WIFI_AP_PASSWORD, EXAMPLE_WIFI_AP_CHANNEL);
 }
 
 void example_wifi_init(void)
@@ -110,7 +107,7 @@ void example_wifi_init(void)
 
   esp_netif_ip_info_t ip_info;
   ip4_addr_t addr;
-  ipaddr_aton(cap_ip_gw, (ip_addr_t *)&addr);
+  ipaddr_aton(EXAMPLE_WIFI_AP_IP_GW, (ip_addr_t *)&addr);
   ip_info.ip.addr = addr.addr;
   ip_info.gw.addr = addr.addr;
   IP4_ADDR(&ip_info.netmask, 255, 0, 0, 0);
@@ -136,4 +133,3 @@ void example_wifi_init(void)
 
   ESP_ERROR_CHECK(esp_wifi_start());
 }
-

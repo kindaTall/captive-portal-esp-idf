@@ -12,9 +12,11 @@
 
 /** An event base type for "captive-portal-wifi". */
 
-#define cap_ssid "esp32_CaptivePortal"
-#define cap_pwd "esp32pwd"
-#define cap_ip_gw "192.213.16.19"
+#define EXAMPLE_WIFI_AP_SSID CONFIG_EXAMPLE_WIFI_AP_SSID
+#define EXAMPLE_WIFI_AP_PASSWORD CONFIG_EXAMPLE_WIFI_AP_PASSWORD
+#define EXAMPLE_WIFI_AP_IP_GW CONFIG_EXAMPLE_WIFI_AP_IP_GW
+#define EXAMPLE_MAX_AP_CONN CONFIG_EXAMPLE_MAX_AP_CONN
+#define EXAMPLE_WIFI_AP_CHANNEL CONFIG_EXAMPLE_WIFI_AP_CHANNEL
 
 #ifdef __cplusplus
 extern "C"
@@ -27,4 +29,3 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
-

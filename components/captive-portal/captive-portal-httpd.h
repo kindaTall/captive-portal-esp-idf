@@ -1,6 +1,5 @@
-#ifndef __WIFI_CAPTIVE_PORTAL_ESP_IDF_COMPONENT_WIFI_CAPTIVE_PORTAL_ESP_IDF_HTTPD_H_INCLUDED__
-#define __WIFI_CAPTIVE_PORTAL_ESP_IDF_COMPONENT_WIFI_CAPTIVE_PORTAL_ESP_IDF_HTTPD_H_INCLUDED__
-/**	captive-portal-component
+#pragma once
+/**captive-portal-component
 
   Copyright (c) 2021 Jeremy Carter <jeremy@jeremycarter.ca>
 
@@ -21,8 +20,7 @@
   CONDITIONS OF ANY KIND, either express or implied.
 */
 
-
-#define DNS_PAGE_NAME "http://wifi-captive-portal/"
+#define CAPTIVE_PORTAL_DNS_PAGE_NAME CONFIG_CAPTIVE_PORTAL_DNS_PAGE_NAME
 
 #ifdef __cplusplus
 extern "C"
@@ -36,4 +34,3 @@ extern "C"
 }
 #endif
 
-#endif

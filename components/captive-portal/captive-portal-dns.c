@@ -1,4 +1,4 @@
-/**	captive-portal-component
+/**captive-portal-component
 
   Copyright (c) 2021 Jeremy Carter <jeremy@jeremycarter.ca>
 
@@ -36,9 +36,8 @@
 
 static const char *DNS_TAG = "cap-dns";
 
-
-static const char *dns_uri = DNS_URI;
-static const char *dns_ns = DNS_NS;
+static const char *dns_uri = CAPTIVE_PORTAL_DNS_URI;
+static const char *dns_ns = CAPTIVE_PORTAL_DNS_NS;
 
 static int sock_fd;
 

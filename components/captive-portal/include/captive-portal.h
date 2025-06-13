@@ -1,5 +1,4 @@
-#ifndef __WIFI_CAPTIVE_PORTAL_ESP_IDF_COMPONENT_WIFI_CAPTIVE_PORTAL_ESP_IDF_H_INCLUDED__
-#define __WIFI_CAPTIVE_PORTAL_ESP_IDF_COMPONENT_WIFI_CAPTIVE_PORTAL_ESP_IDF_H_INCLUDED__
+#pragma once
 /**	captive-portal-component - example - http-slideshow
 
   Copyright (c) 2021 Jeremy Carter <jeremy@jeremycarter.ca>
@@ -23,4 +22,3 @@ extern "C"
 }
 #endif
 
-#endif

@@ -62,7 +62,7 @@ static esp_err_t common_get_handler(httpd_req_t *req)
       const char resp[] = "302 Found";
       ESP_LOGI(HTTPD_TAG, "Detected redirect trigger HOST: %s", redir_trigger_host);
       httpd_resp_set_status(req, resp);
-      httpd_resp_set_hdr(req, "Location", DNS_PAGE_NAME);
+      httpd_resp_set_hdr(req, "Location", CAPTIVE_PORTAL_DNS_PAGE_NAME);
       return httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
     }
   }
