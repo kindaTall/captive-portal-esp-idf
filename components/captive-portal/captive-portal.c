@@ -1,4 +1,4 @@
-/**	captive-portal
+/**	captive-portal-component
 
   Copyright (c) 2021 Jeremy Carter <jeremy@jeremycarter.ca>
 
@@ -9,21 +9,12 @@
   part of this project in any way.
 */
 #include "captive-portal.h"
-#include "nvs_flash.h"
-#include "example-wifi.h"
+#include "captive-portal-dns.h"
+#include "captive-portal-httpd.h"
 
-void app_main(void)
-{
-  /** Initialize NVS. */
-  esp_err_t err = nvs_flash_init();
-  if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND)
-  {
-    ESP_ERROR_CHECK(nvs_flash_erase());
-    err = nvs_flash_init();
-  }
-  ESP_ERROR_CHECK(err);
 
-  example_wifi_init();
-
-  captive_portal_init();
+void captive_portal_init(void)
+{  
+  wifi_captive_portal_esp_idf_dns_init();
+  wifi_captive_portal_esp_idf_httpd_init();  
 }

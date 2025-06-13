@@ -1,4 +1,4 @@
-# captive-portal
+# example-wifi component
 #
 # Copyright (c) 2021 Jeremy Carter <jeremy@jeremycarter.ca>
 #
@@ -10,16 +10,9 @@
 
 idf_component_register(
   SRCS
-    "main.c"
+    "example-wifi.c"
 
   INCLUDE_DIRS
-    .
-)
+    "."
 
-set(
-  COMPONENTS_DIRS,
-    ${project_dir}/components
 )
-
-# add_compile_definitions(
-# )

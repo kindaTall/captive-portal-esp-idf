@@ -1,4 +1,4 @@
-# captive-portal
+# captive-portal-component
 #
 # Copyright (c) 2021 Jeremy Carter <jeremy@jeremycarter.ca>
 #
@@ -10,16 +10,17 @@
 
 idf_component_register(
   SRCS
-    "main.c"
+    "captive-portal.c"
+    "captive-portal-dns.c"
+    "captive-portal-httpd.c"
+
+  REQUIRES
+     "nvs_flash" "fatfs" "lwip" "esp_http_server"
 
   INCLUDE_DIRS
-    .
-)
+    "include"
 
-set(
-  COMPONENTS_DIRS,
-    ${project_dir}/components
-)
+  PRIV_INCLUDE_DIRS
+    "."
 
-# add_compile_definitions(
-# )
+)

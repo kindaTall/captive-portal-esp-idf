@@ -1,6 +1,6 @@
 #ifndef __WIFI_CAPTIVE_PORTAL_ESP_IDF_COMPONENT_WIFI_CAPTIVE_PORTAL_ESP_IDF_HTTPD_H_INCLUDED__
 #define __WIFI_CAPTIVE_PORTAL_ESP_IDF_COMPONENT_WIFI_CAPTIVE_PORTAL_ESP_IDF_HTTPD_H_INCLUDED__
-/**	wifi-captive-portal-esp-idf-component
+/**	captive-portal-component
 
   Copyright (c) 2021 Jeremy Carter <jeremy@jeremycarter.ca>
 
@@ -20,19 +20,9 @@
   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
   CONDITIONS OF ANY KIND, either express or implied.
 */
-#include <string.h>
-#include <stdlib.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/semphr.h"
-#include "esp_system.h"
-#include "esp_event_base.h"
-
-extern SemaphoreHandle_t xMutexHTTPD;
 
 
-
-/** The event loop handle. */
-extern esp_event_loop_handle_t wifi_captive_portal_esp_idf_httpd_event_loop_handle;
+#define DNS_PAGE_NAME "http://wifi-captive-portal/"
 
 #ifdef __cplusplus
 extern "C"
@@ -40,7 +30,7 @@ extern "C"
 #endif
 
   /** The esp-idf task function. */
-  void wifi_captive_portal_esp_idf_httpd_task(void *pvParameter);
+  void wifi_captive_portal_esp_idf_httpd_init(void);
 
 #ifdef __cplusplus
 }

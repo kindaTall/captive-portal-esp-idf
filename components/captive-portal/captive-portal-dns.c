@@ -1,4 +1,4 @@
-/**	wifi-captive-portal-esp-idf-component
+/**	captive-portal-component
 
   Copyright (c) 2021 Jeremy Carter <jeremy@jeremycarter.ca>
 
@@ -32,12 +32,13 @@
 #include "lwip/sockets.h"
 #include "lwip/err.h"
 #include "esp_netif.h"
-#include "wifi-captive-portal-esp-idf-dns.h"
+#include "captive-portal-dns.h"
 
 static const char *DNS_TAG = "cap-dns";
 
-static const char *dns_uri = "http://senvis.local";
-static const char *dns_ns = "ns";
+
+static const char *dns_uri = DNS_URI;
+static const char *dns_ns = DNS_NS;
 
 static int sock_fd;
 

@@ -1,0 +1,41 @@
+# wifi-captive-portal-esp-idf-component
+#
+# Copyright (c) 2021 Jeremy Carter <jeremy@jeremycarter.ca>
+#
+# This code is released under the license terms contained in the
+# file named LICENSE, which is found in the top-level folder in
+# this project. You must agree to follow those license terms,
+# otherwise you aren't allowed to copy, distribute, or use any
+# part of this project in any way.
+
+menu "[<>] Project connection config"
+    comment " ----- WiFi Access Point Settings ----- "
+
+    config EXAMPLE_WIFI_AP_SSID
+        string "WiFi AP SSID"
+        default "wifi-net-84541"
+        help
+            Start up an access point with this SSID.
+
+    config EXAMPLE_WIFI_AP_PASSWORD
+        string "WiFi AP Password"
+        default "DHJSd 86 fUIxdf"
+        help
+            Start up an access point with this Password.
+
+    config EXAMPLE_WIFI_AP_CHANNEL
+        int "WiFi AP Channel"
+        range 1 13
+        default 1
+        help
+            WiFi channel (network channel) for the example to use.
+
+    config EXAMPLE_MAX_AP_CONN
+        int "WiFi Maximum connections AP"
+        default 4
+        help
+            Max number of the STA connects to AP.
+
+    comment " ----- End WiFi Access Point Settings ----- "
+
+endmenu
