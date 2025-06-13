@@ -15,53 +15,53 @@ idf_component_register(
     "wifi-captive-portal-esp-idf-httpd.c"
     "wifi-captive-portal-esp-idf-wifi.c"
 
-    $ENV{IDF_PATH}/components/fatfs/diskio/diskio.c
-    $ENV{IDF_PATH}/components/fatfs/src/ff.c
-    $ENV{IDF_PATH}/components/fatfs/vfs/vfs_fat.c
-    $ENV{IDF_PATH}/components/lwip/lwip/src/core/ipv4/ip4_addr.c
-    $ENV{IDF_PATH}/components/lwip/lwip/src/core/dns.c
-    $ENV{IDF_PATH}/components/wear_levelling/wear_levelling.cpp
-    $ENV{IDF_PATH}/components/esp_http_server/src/httpd_main.c
-    $ENV{IDF_PATH}/components/esp_http_server/src/httpd_parse.c
-    $ENV{IDF_PATH}/components/esp_http_server/src/httpd_sess.c
-    $ENV{IDF_PATH}/components/esp_http_server/src/httpd_txrx.c
-    $ENV{IDF_PATH}/components/esp_http_server/src/httpd_uri.c
-    $ENV{IDF_PATH}/components/esp_http_server/src/httpd_ws.c
-    $ENV{IDF_PATH}/components/esp_http_server/src/util/ctrl_sock.c
+    # $ENV{IDF_PATH}/components/fatfs/diskio/diskio.c
+    # $ENV{IDF_PATH}/components/fatfs/src/ff.c
+    # $ENV{IDF_PATH}/components/fatfs/vfs/vfs_fat.c
+    # $ENV{IDF_PATH}/components/lwip/lwip/src/core/ipv4/ip4_addr.c
+    # $ENV{IDF_PATH}/components/lwip/lwip/src/core/dns.c
+    # $ENV{IDF_PATH}/components/wear_levelling/wear_levelling.cpp
+    # $ENV{IDF_PATH}/components/esp_http_server/src/httpd_main.c
+    # $ENV{IDF_PATH}/components/esp_http_server/src/httpd_parse.c
+    # $ENV{IDF_PATH}/components/esp_http_server/src/httpd_sess.c
+    # $ENV{IDF_PATH}/components/esp_http_server/src/httpd_txrx.c
+    # $ENV{IDF_PATH}/components/esp_http_server/src/httpd_uri.c
+    # $ENV{IDF_PATH}/components/esp_http_server/src/httpd_ws.c
+    # $ENV{IDF_PATH}/components/esp_http_server/src/util/ctrl_sock.c
 
-  # REQUIRES
-  #   ""
+  REQUIRES
+     "nvs_flash" "fatfs" "lwip" "esp_http_server"
 
   INCLUDE_DIRS
     "include"
 
-    $ENV{IDF_PATH}/components/bootloader_support/include
-    $ENV{IDF_PATH}/components/esp_http_server/include
-    $ENV{IDF_PATH}/components/esp_http_server/src
-    $ENV{IDF_PATH}/components/esp_http_server/src/port/esp32
-    $ENV{IDF_PATH}/components/esp_http_server/src/util
-    $ENV{IDF_PATH}/components/fatfs/diskio
-    $ENV{IDF_PATH}/components/fatfs/src
-    $ENV{IDF_PATH}/components/fatfs/vfs
-    $ENV{IDF_PATH}/components/lwip/lwip/src/include
-    $ENV{IDF_PATH}/components/mbedtls/esp_crt_bundle/include
-    $ENV{IDF_PATH}/components/mbedtls/mbedtls/include
-    $ENV{IDF_PATH}/components/mbedtls/port/include
-    $ENV{IDF_PATH}/components/nghttp/port/include
-    $ENV{IDF_PATH}/components/nvs_flash/include
-    $ENV{IDF_PATH}/components/spi_flash/include
-    $ENV{IDF_PATH}/components/ulp/include
-    $ENV{IDF_PATH}/components/wear_levelling/include
-    $ENV{IDF_PATH}/components/wear_levelling/private_include
-    $ENV{IDF_PATH}/components/esp_wifi/include
-
-    $ENV{IDF_PATH}/examples/common_components/protocol_examples_common/include
+    # $ENV{IDF_PATH}/components/bootloader_support/include
+    # $ENV{IDF_PATH}/components/esp_http_server/include
+    # $ENV{IDF_PATH}/components/esp_http_server/src
+    # $ENV{IDF_PATH}/components/esp_http_server/src/port/esp32
+    # $ENV{IDF_PATH}/components/esp_http_server/src/util
+    # $ENV{IDF_PATH}/components/fatfs/diskio
+    # $ENV{IDF_PATH}/components/fatfs/src
+    # $ENV{IDF_PATH}/components/fatfs/vfs
+    # $ENV{IDF_PATH}/components/lwip/lwip/src/include
+    # $ENV{IDF_PATH}/components/mbedtls/esp_crt_bundle/include
+    # $ENV{IDF_PATH}/components/mbedtls/mbedtls/include
+    # $ENV{IDF_PATH}/components/mbedtls/port/include
+    # $ENV{IDF_PATH}/components/nghttp/port/include
+    # $ENV{IDF_PATH}/components/nvs_flash/include
+    # $ENV{IDF_PATH}/components/spi_flash/include
+    # $ENV{IDF_PATH}/components/ulp/include
+    # $ENV{IDF_PATH}/components/wear_levelling/include
+    # $ENV{IDF_PATH}/components/wear_levelling/private_include
+    # $ENV{IDF_PATH}/components/esp_wifi/include	 
+    # $ENV{IDF_PATH}/examples/common_components/protocol_examples_common/include
 
   # EMBED_TXTFILES
   #   ""
 )
 
-set(EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/examples/common_components/protocol_examples_common)
+# set(EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/examples/common_components/protocol_examples_common)
+set (EXTRA_COMPONENT_DIRS "C:/Espressif/frameworks/esp-idf-v4.4/examples/common_components/protocol_examples_common")
 
 # add_compile_definitions(
 # )

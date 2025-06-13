@@ -34,7 +34,10 @@
 #include "esp_netif.h"
 #include "wifi-captive-portal-esp-idf-dns.h"
 
-static const char *DNS_TAG = "wifi-captive-portal-esp-idf-dns";
+static const char *DNS_TAG = "cap-dns";
+
+static const char *dns_uri = "http://senvis.local";
+static const char *dns_ns = "ns";
 
 static int sock_fd;
 
@@ -56,9 +59,18 @@ static void setn32(void *pp, int32_t n)
   *p++ = (n & 0xff);
 }
 
-static uint16_t my_ntohs(uint16_t *in)
+/**
+ * @brief Converts a 16-bit value from network byte order to host byte order.
+ *
+ * Takes a 16-bit value in network byte order (big-endian) and converts it to host byte order.
+ * This means 0xXXYY in network byte order becomes 0xYYXX in host byte order on little-endian systems.
+ *
+ * @param in Pointer to the 16-bit value in network byte order.
+ * @return The 16-bit value in host byte order.
+ */
+static uint16_t my_ntohs(const uint16_t *in)
 {
-  char *p = (char *)in;
+  const char *p = (const char *)in;
   return ((p[0] << 8) & 0xff00) | (p[1] & 0xff);
 }
 
@@ -107,7 +119,7 @@ static char *label_to_str(char *packet, char *labelPtr, int packetSz, char *res,
 }
 
 // Converts a dotted hostname to the weird label form dns uses.
-static char *str_to_label(char *str, char *label, int maxLen)
+static char *str_to_label(char *str, char *label, int max_len)
 {
   char *len = label;   // ptr to len byte
   char *p = label + 1; // ptr to next label byte to be written
@@ -125,11 +137,26 @@ static char *str_to_label(char *str, char *label, int maxLen)
     else
     {
       *p++ = *str++; // copy byte
-                     //if ((p-label)>maxLen) return NULL;	// check out of bounds
+    }
+    // Check if we are out of bounds
+    if ((p - label) >= max_len)
+    {
+      ESP_LOGE(DNS_TAG, "Not enough space in DNS label buffer");
+      return NULL; // not enough space
     }
   }
   *len = 0;
   return p; // ptr to first free byte in resp
+}
+
+static char *add_resource_footer(char *p, int type, int cl, int ttl, int rdlength)
+{
+  DnsResourceFooter *rf = (DnsResourceFooter *)p;
+  setn16(&rf->type, type);
+  setn16(&rf->cl, cl);
+  setn32(&rf->ttl, ttl);
+  setn16(&rf->rdlength, rdlength);
+  return p + sizeof(DnsResourceFooter);
 }
 
 // Receive a DNS packet and maybe send a response back
@@ -139,7 +166,7 @@ static void dns_recv(struct sockaddr_in *premote_addr, char *pusrdata, unsigned 
   char buff[WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_LEN];
   char reply[WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_LEN];
   int i;
-  char *rend = &reply[length];
+  char *rend = &reply[length]; // Pointer to the end of the reply buffer, where we will write the response
   char *p = pusrdata;
   DnsHeader *hdr = (DnsHeader *)p;
   DnsHeader *rhdr = (DnsHeader *)&reply[0];
@@ -171,20 +198,23 @@ static void dns_recv(struct sockaddr_in *premote_addr, char *pusrdata, unsigned 
 
     if (my_ntohs(&qf->type) == WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_QTYPE_A)
     {
-      // They want to know the IPv4 address of something.
-      // Build the response.
-
-      rend = str_to_label(buff, rend, sizeof(reply) - (rend - reply)); // Add the label
+      // IPv4 address request. We will reply with our own IP.
+      // Add the label
+      rend = str_to_label(buff, rend, sizeof(reply) - (rend - reply));
       if (rend == NULL)
+      {
+        ESP_LOGE(DNS_TAG, "Not enough space in reply buffer for DNS label");
         return;
-      DnsResourceFooter *rf = (DnsResourceFooter *)rend;
-      rend += sizeof(DnsResourceFooter);
-      setn16(&rf->type, WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_QTYPE_A);
-      setn16(&rf->cl, WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_QCLASS_IN);
-      setn32(&rf->ttl, 0);
-      setn16(&rf->rdlength, 4); // IPv4 addr is 4 bytes;
-      // Grab the current IP of the softap interface
+      }
+      if (rend + sizeof(DnsResourceFooter) + 4 - reply > WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_LEN)
+      {
+        ESP_LOGE(DNS_TAG, "Not enough space in reply buffer for DNS A response");
+        return;
+      }
 
+      rend = add_resource_footer(rend, WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_QTYPE_A, WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_QCLASS_IN, 0, 4);
+
+      // Grab the current IP of the softap interface
       esp_netif_ip_info_t info;
       esp_netif_get_ip_info(esp_netif_next(NULL), &info);
       *rend++ = ip4_addr1(&info.ip);
@@ -195,36 +225,55 @@ static void dns_recv(struct sockaddr_in *premote_addr, char *pusrdata, unsigned 
     }
     else if (my_ntohs(&qf->type) == WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_QTYPE_NS)
     {
-      // Give ns server. Basically can be whatever we want because it'll get resolved to our IP later anyway.
+      // Request for nameserver. We will reply with brief nonsensensical nameserver. It will be resolved (see above) to our IP.
       rend = str_to_label(buff, rend, sizeof(reply) - (rend - reply)); // Add the label
-      DnsResourceFooter *rf = (DnsResourceFooter *)rend;
-      rend += sizeof(DnsResourceFooter);
-      setn16(&rf->type, WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_QTYPE_NS);
-      setn16(&rf->cl, WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_QCLASS_IN);
-      setn16(&rf->ttl, 0);
-      setn16(&rf->rdlength, 4);
-      *rend++ = 2;
-      *rend++ = 'n';
-      *rend++ = 's';
-      *rend++ = 0;
+      if (rend == NULL)
+      {
+        ESP_LOGE(DNS_TAG, "Not enough space in reply buffer for DNS label");
+        return;
+      }
+      const size_t dns_ns_len = strlen(dns_ns) + 2; // +2 for the length byte and the null terminator
+      if (rend + sizeof(DnsResourceFooter) + dns_ns_len - reply > WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_LEN)
+      {
+        ESP_LOGE(DNS_TAG, "Not enough space in reply buffer for DNS NS response");
+        return;
+      }
+
+      rend = add_resource_footer(rend, WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_QTYPE_NS, WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_QCLASS_IN, 0, dns_ns_len);
+      // Add the nameserver string
+      *rend++ = strlen(dns_ns); // Length of the nameserver string
+      strcpy(rend, dns_ns);     // Copy the nameserver string
+      rend += strlen(dns_ns) + 1;
       setn16(&rhdr->ancount, my_ntohs(&rhdr->ancount) + 1);
     }
     else if (my_ntohs(&qf->type) == WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_QTYPE_URI)
     {
-      // Give uri to us
+      //
       rend = str_to_label(buff, rend, sizeof(reply) - (rend - reply)); // Add the label
-      DnsResourceFooter *rf = (DnsResourceFooter *)rend;
-      rend += sizeof(DnsResourceFooter);
+      if (rend == NULL)
+      {
+        ESP_LOGE(DNS_TAG, "Not enough space in reply buffer for DNS label");
+        return;
+      }
+      if (rend + sizeof(DnsResourceFooter) + sizeof(DnsUriHdr) + strlen(dns_uri) - reply > WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_LEN)
+      {
+        ESP_LOGE(DNS_TAG, "Not enough space in reply buffer for DNS URI response");
+        return;
+      }
+
+      // No device I have has tested this. I wonder if the rdlength is correct.
+      // Is cleaned up, but same as the original. It is curious, that here we do not copy a null-terminator and dont move rend past it, while we do in the NS case.
+      rend = add_resource_footer(rend, WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_QTYPE_URI, WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_QCLASS_URI, 0, sizeof(DnsUriHdr) + strlen(dns_uri));
+
+      // Add the URI header
       DnsUriHdr *uh = (DnsUriHdr *)rend;
-      rend += sizeof(DnsUriHdr);
-      setn16(&rf->type, WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_QTYPE_URI);
-      setn16(&rf->cl, WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_QCLASS_URI);
-      setn16(&rf->ttl, 0);
-      setn16(&rf->rdlength, 4 + 16);
       setn16(&uh->prio, 10);
       setn16(&uh->weight, 1);
-      memcpy(rend, "http://esp.nonet", 16);
-      rend += 16;
+      rend += sizeof(DnsUriHdr);
+
+      // Add the URI string
+      memcpy(rend, dns_uri, strlen(dns_uri));
+      rend += strlen(dns_uri);
       setn16(&rhdr->ancount, my_ntohs(&rhdr->ancount) + 1);
     }
   }
@@ -246,6 +295,7 @@ static void dns_task(void *pvParameters)
   server_addr.sin_port = htons(53);
   server_addr.sin_len = sizeof(server_addr);
 
+  // Create a UDP socket
   do
   {
     sock_fd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -256,6 +306,7 @@ static void dns_task(void *pvParameters)
     }
   } while (sock_fd == -1);
 
+  // Bind the socket to the address and port
   do
   {
     ret = bind(sock_fd, (struct sockaddr *)&server_addr, sizeof(server_addr));
@@ -265,18 +316,20 @@ static void dns_task(void *pvParameters)
       vTaskDelay(1000 / portTICK_RATE_MS);
     }
   } while (ret != 0);
-
   ESP_LOGI(DNS_TAG, "DNS initialized.");
 
+  // Run the DNS server loop
   while (1)
   {
     memset(&from, 0, sizeof(from));
     fromlen = sizeof(struct sockaddr_in);
     ret = recvfrom(sock_fd, (uint8_t *)udp_msg, WIFI_CAPTIVE_PORTAL_ESP_IDF_DNS_LEN, 0, (struct sockaddr *)&from, (socklen_t *)&fromlen);
     if (ret > 0)
+    {
       dns_recv(&from, udp_msg, ret);
+    }
   }
-
+  ESP_LOGE(DNS_TAG, "dns_task exiting, this should never happen!");
   close(sock_fd);
   vTaskDelete(NULL);
 }

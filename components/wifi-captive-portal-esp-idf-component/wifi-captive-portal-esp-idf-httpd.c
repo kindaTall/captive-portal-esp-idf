@@ -46,7 +46,7 @@
 #define FILE_PATH_MAX (ESP_VFS_PATH_MAX + 128)
 #define SCRATCH_BUFSIZE (10240)
 
-static const char *HTTPD_TAG = "wifi-captive-portal-esp-idf-httpd";
+static const char *HTTPD_TAG = "cap-httpd";
 
 esp_event_loop_handle_t wifi_captive_portal_esp_idf_httpd_event_loop_handle;
 

@@ -29,12 +29,7 @@
 
 extern SemaphoreHandle_t xMutexHTTPD;
 
-/** An event base type for "wifi-captive-portal-esp-idf-httpd". */
-ESP_EVENT_DECLARE_BASE(WIFI_CAPTIVE_PORTAL_ESP_IDF_HTTPD_EVENT);
-enum /**< The events. */
-{
-  WIFI_CAPTIVE_PORTAL_ESP_IDF_HTTPD_EVENT_FINISH, /**< An event for "this task is finished". */
-};
+
 
 /** The event loop handle. */
 extern esp_event_loop_handle_t wifi_captive_portal_esp_idf_httpd_event_loop_handle;

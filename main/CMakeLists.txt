@@ -18,7 +18,7 @@ idf_component_register(
     "wifi-captive-portal-esp-idf-component"
 
   INCLUDE_DIRS
-    ${project_dir}/components/wifi-captive-portal-esp-idf-component/include
+    .
 )
 
 set(

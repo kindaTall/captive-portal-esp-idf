@@ -29,10 +29,9 @@
 #include "lwip/inet.h"
 #include "lwip/ip4_addr.h"
 #include "lwip/dns.h"
-#include "protocol_examples_common.h"
 #include "wifi-captive-portal-esp-idf-wifi.h"
 
-const char *wifi_captive_portal_esp_idf_wifi_tag = "wifi-captive-portal-esp-idf-wifi";
+const char *wifi_captive_portal_esp_idf_wifi_tag = "cap-wifi";
 
 esp_event_loop_handle_t wifi_captive_portal_esp_idf_wifi_event_loop_handle;
 static struct wifi_captive_portal_esp_idf_wifi_task_action_t wifi_task_action;
@@ -61,15 +60,21 @@ static void wifi_event_handler(void *arg, esp_event_base_t event_base,
   }
 }
 
+#define cap_ssid "esp32_CaptivePortal"
+#define cap_pwd "esp32pwd"
+
 static void wifi_captive_portal_esp_idf_wifi_ap_init(void)
 {
+  const int max_connection = 4;
+  const int channel = 5;
+
   wifi_config_t wifi_config_ap = {
       .ap = {
-          .ssid = CONFIG_EXAMPLE_WIFI_AP_SSID,
-          .ssid_len = strlen(CONFIG_EXAMPLE_WIFI_AP_SSID),
-          .channel = CONFIG_EXAMPLE_WIFI_AP_CHANNEL,
-          .password = CONFIG_EXAMPLE_WIFI_AP_PASSWORD,
-          .max_connection = CONFIG_EXAMPLE_MAX_AP_CONN,
+          .ssid = cap_ssid,
+          .ssid_len = strlen(cap_ssid),
+          .channel = channel,
+          .password = cap_pwd,
+          .max_connection = max_connection,
           .authmode = WIFI_AUTH_WPA_WPA2_PSK},
   };
   if (strlen(CONFIG_EXAMPLE_WIFI_AP_PASSWORD) == 0)

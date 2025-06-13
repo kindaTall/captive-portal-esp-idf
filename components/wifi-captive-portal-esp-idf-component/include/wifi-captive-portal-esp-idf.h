@@ -21,7 +21,7 @@
 #include "esp_system.h"
 #include "esp_event.h"
 #include "esp_wifi.h"
-#include "protocol_examples_common.h"
+// #include "protocol_examples_common.h"
 #include "wifi-captive-portal-esp-idf-wifi.h"
 #include "wifi-captive-portal-esp-idf-httpd.h"
 
